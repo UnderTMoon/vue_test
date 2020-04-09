@@ -64,16 +64,24 @@
     </el-card>
 
     <!--添加用户对话框-->
-    <el-dialog
-      title="添加用户"
-      :visible.sync="addDialogVisible"
-      width="50%" >
+    <el-dialog title="添加用户" :visible.sync="addDialogVisible"
+               width="50%" @close="addDialogClosed">
       <!--内容主体区-->
-      <span>这是一段信息</span>
+      <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="70px" >
+        <el-form-item label="用户名" prop="userName">
+          <el-input v-model="addForm.userName"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" prop="password">
+          <el-input v-model="addForm.password"></el-input>
+        </el-form-item>
+        <el-form-item label="手机号" prop="phone">
+          <el-input v-model="addForm.phone"></el-input>
+        </el-form-item>
+      </el-form>
       <!--底部区域-->
       <span slot="footer" class="dialog-footer">
         <el-button @click="addDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addDialogVisible = false">确 定</el-button>
+        <el-button type="primary" @click="addUser">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -83,6 +91,26 @@
   export default {
     name: 'Users',
     data () {
+      //验证邮箱规则
+      var checkEmail = (rule,value,cb) => {
+        // 验证邮箱正则表达式
+        const regEmail = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/
+        if(regEmail.test(value)){
+          //  合法邮箱
+          return cb()
+        }
+        cb(new Error('请输入合法邮箱'))
+      }
+      //验证手机号规则
+      var checkPhone = (rule,value,cb) => {
+        // 验证手机号正则表达式
+        const regEmail = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/
+        if(regEmail.test(value)){
+          //  合法手机号
+          return cb()
+        }
+        cb(new Error('请输入正确手机号'))
+      }
       return {
         queryInfo: {
           query: '',
@@ -94,8 +122,53 @@
         userList: [],
         total: 0,
         //控制添加用户对话框 显示、隐藏
-        addDialogVisible: false
-
+        addDialogVisible: false,
+        //  添加用户的表单数据
+        addForm: {
+          userName: '',
+          password: '',
+          phone: ''
+        },
+        //添加表单验证规则对象
+        addFormRules: {
+          userName: [
+            {
+              required: true,
+              message: '请输入用户名',
+              trigger: 'blur'
+            },
+            {
+              min: 3,
+              max: 10,
+              message: '用户名长度在3-10个字符间',
+              trigger:'blur'
+            }
+          ],
+          password: [
+            {
+              required: true,
+              message: '请输入密码',
+              trigger: 'blur'
+            },
+            {
+              min: 3,
+              max: 16,
+              message: '密码长度在3-16个字符间',
+              trigger:'blur'
+            }
+          ],
+          phone: [
+            {
+              required: true,
+              message: '请输入手机号',
+              trigger: 'blur'
+            },
+            {
+              validator: checkPhone,
+              trigger:'blur'
+            }
+          ]
+        },
       }
     },
     created () {
@@ -124,11 +197,31 @@
       //监听switch 开关状态改变
       async userStateChanged (userInfo) {
         const { data: res } = await this.$http.post('', JSON.stringify(userInfo))
-        if (res.code != '200') {
+        if (res.code !== '200') {
           userInfo.mg_state = !userInfo.mg_state
           return this.$message.error('更新用户状态失败！')
         }
         this.$message.success('更新用户状态成功！')
+      },
+    // 监听添加用户对话框关闭事件
+      addDialogClosed() {
+        this.$refs.addFormRef.resetFields()
+      },
+    //点击按钮，添加新用户
+      addUser() {
+        this.$refs.addFormRef.validate(async valid => {
+          if(!valid) return
+          //可以添加用户
+          const {data: res} = await this.$http.post('/user/insert',this.addForm)
+          if(res.data.code !== 200){
+            this.$message.error('添加用户失败！')
+          }
+          this.$message.success('添加用户成功！')
+          //添加用户对话框关闭
+          this.addDialogVisible = false
+        //重新获取用户列表
+          this.getUserList()
+        })
       }
     }
   }
