@@ -58,7 +58,61 @@
     data() {
       return {
         //左侧菜单栏数据
-        menuList: [],
+        menuList: [
+          {
+            "id": 1,
+            "authName": "权限管理",
+            "iconName": "el-icon-setting",
+            "children": [
+              {
+                "id": 11,
+                "authName": "权限列表",
+                "path": "roles"
+              }
+            ]
+          },
+          {
+            "id": 2,
+            "authName": "用户管理",
+            "iconName": "el-icon-user",
+            "children": [
+              {
+                "id": 21,
+                "authName": "用户列表",
+                "path": "users"
+              }
+            ]
+          },
+          {
+            "id": 3,
+            "authName": "个人中心",
+            "iconName": "el-icon-user",
+            "children": [
+              {
+                "id": 31,
+                "authName": "个人信息",
+                "path": "info"
+              },
+              {
+                "id": 32,
+                "authName": "修改密码",
+                "path": "updataPassword"
+              }
+            ]
+          },
+          {
+            "id": 4,
+            "authName": "阿萨德",
+            "iconName": "el-icon-user",
+            "children": [
+              {
+                "id": 41,
+                "authName": "阿萨德",
+                "path": "info"
+              }
+            ]
+          },
+        ],
         //是否折叠，默认不折叠
         isCollapse: false,
         //被激活的链接地址
