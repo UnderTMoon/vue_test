@@ -67,6 +67,11 @@
               {
                 "id": 11,
                 "authName": "权限列表",
+                "path": "rights"
+              },
+              {
+                "id": 12,
+                "authName": "角色列表",
                 "path": "roles"
               }
             ]
