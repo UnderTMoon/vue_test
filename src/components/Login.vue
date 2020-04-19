@@ -84,9 +84,9 @@
         this.$refs.loginFormRef.validate(async valid => {
           console.log(valid)
           if (!valid) return
-          // const { data: res} = await this.$http.post("/user/login", this.loginForm)
+          const { data: res} = await this.$http.post("/login/login", this.loginForm)
 
-          // if(res.meta.status != 200) return this.$message.error('登陆失败！')
+          if(res.code != 200) return this.$message.error('登陆失败！')
           this.$message.success('登陆成功！')
           //登陆成功之后的token保存到客户端的sessionStorage中
           // window.sessionStorage.setItem('token',res.data.token)

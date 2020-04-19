@@ -142,20 +142,7 @@
           //当前每页显示数据条数
           pageSize: 10
         },
-        userList: [
-          {
-            'userName':'张三',
-            'phone':'123',
-            'sex':'男',
-            'address':'济南市',
-          },
-          {
-            'userName':'李四',
-            'phone':'123',
-            'sex':'女',
-            'address':'济南市',
-          },
-        ],
+        userList: [],
         total: 0,
         //控制添加用户对话框 显示、隐藏
         addDialogVisible: false,
@@ -234,13 +221,13 @@
     },
     methods: {
       async getUserList () {
-        const { data: res } = await this.$http.get('users', { params: this.queryInfo })
+        const { data: res } = await this.$http.post("/users/list", this.queryInfo)
         console.log(res)
-        if (res.msg !== 200) {
+        if (res.code != 200) {
           return this.$message.error('获取用户列表失败！')
         }
-        this.userList = res.data.user
-        this.total = res.data.total
+        this.userList = res.data
+        // this.total = res.total
       },
       //监听pageSize改变事件
       handleSizeChange (newSize) {
