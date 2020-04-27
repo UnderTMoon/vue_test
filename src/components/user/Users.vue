@@ -58,7 +58,7 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="queryInfo.pagenum"
-        :page-sizes="[10, 20, 30, 40]"
+        :page-sizes="[5, 10, 20, 1]"
         :page-size="queryInfo.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total">
@@ -138,9 +138,9 @@
         queryInfo: {
           query: '',
           //当前所在页
-          pagenum: 1,
+          pageNo: 1,
           //当前每页显示数据条数
-          pageSize: 10
+          pageSize: 5
         },
         userList: [],
         total: 0,
@@ -224,10 +224,10 @@
         const { data: res } = await this.$http.post("/users/list", this.queryInfo)
         console.log(res)
         if (res.code != 200) {
-          return this.$message.error('获取用户列表失败！')
+          return this.$message.error(res.reason)
         }
         this.userList = res.data
-        // this.total = res.total
+        this.total = res.page.total
       },
       //监听pageSize改变事件
       handleSizeChange (newSize) {
