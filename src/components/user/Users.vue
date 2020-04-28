@@ -41,10 +41,10 @@
           <template slot-scope="scope">
             <!--修改按钮-->
             <el-button type="primary" icon="el-icon-edit"
-                       size="mini" @click="showEditDialog(scope.row.id)"></el-button>
+                       size="mini" @click="showEditDialog(scope.row.userId)"></el-button>
             <!--删除按钮-->
             <el-button type="danger" icon="el-icon-delete" size="mini"
-              @click="removeUserById(scope.row.id)"></el-button>
+              @click="removeUserById(scope.row.userId)"></el-button>
             <!--分配角色按钮-->
             <el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
               <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
@@ -223,7 +223,7 @@
       async getUserList () {
         const { data: res } = await this.$http.post("/users/list", this.queryInfo)
         console.log(res)
-        if (res.code != 200) {
+        if (res.code != '200') {
           return this.$message.error(res.reason)
         }
         this.userList = res.data
@@ -257,8 +257,8 @@
         this.$refs.addFormRef.validate(async valid => {
           if(!valid) return
           //可以添加用户
-          const {data: res} = await this.$http.post('/user/insert',this.addForm)
-          if(res.data.code !== 200){
+          const {data: res} = await this.$http.post('/users/add', this.addForm)
+          if(res.code !== '200'){
             this.$message.error('添加用户失败！')
           }
           this.$message.success('添加用户成功！')
@@ -271,8 +271,9 @@
       //展示编辑用户对话框
       async showEditDialog(id) {
         console.log(id)
-        const {data:res} = this.$http.post('user/info',id)
-        if(res.code !== 200){
+        var data = {"userId": id}
+        const {data: res} = await this.$http.post('users/detail', data)
+        if(res.code !== '200'){
           return this.$message.error('查询用户信息失败！')
         }
         this.editForm = res.data
@@ -287,8 +288,8 @@
          this.$refs.editFormRef.validate(async valid => {
           if(!valid) return
         //  发起修改用户信息请求
-           const {data:res} = await this.$http.post('user/edit',this.editForm)
-           if(res.code !== 200) return this.$message.error('更新用户信息失败！')
+           const {data:res} = await this.$http.post('users/edit',this.editForm)
+           if(res.code !== '200') return this.$message.error('更新用户信息失败！')
            //关闭对话框+刷新数据列表+提示成功
            this.editDialogVisible = false
            this.getUserList()
@@ -309,8 +310,9 @@
         if(confirmResult !== 'confirm'){
           return this.$message.info('已取消删除！')
         }
-        const {data:res} = this.$http.post('users/delete',id)
-        if(res.code !== 200) return this.$message.error('删除用户失败！')
+        var data = {"userId": id}
+        const {data:res} = await this.$http.post('users/delete',data)
+        if(res.code !== '200') return this.$message.error('删除用户失败！')
         this.$message.success('删除用户成功！')
         this.getUserList()
       }
