@@ -107,12 +107,12 @@
           },
           {
             "id": 4,
-            "authName": "阿萨德",
+            "authName": "通知公告",
             "iconName": "el-icon-user",
             "children": [
               {
                 "id": 41,
-                "authName": "阿萨德",
+                "authName": "通知公告",
                 "path": "info"
               }
             ]

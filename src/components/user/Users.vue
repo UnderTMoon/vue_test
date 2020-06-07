@@ -28,8 +28,7 @@
         <el-table-column label="电话" prop="phone"></el-table-column>
         <el-table-column label="性别" prop="sex"></el-table-column>
         <el-table-column label="家庭住址" prop="address"></el-table-column>
-        <el-table-column label="身份角色" prop="role"></el-table-column>
-
+        <el-table-column label="身份角色" prop="roleName"></el-table-column>
         <el-table-column label="状态">
           <template slot-scope="scope">
             <el-switch v-model="scope.row.mg_state" @change="userStateChanged(scope.row)">
@@ -79,6 +78,12 @@
         <el-form-item label="手机号" prop="phone">
           <el-input v-model="addForm.phone"></el-input>
         </el-form-item>
+        <el-form-item label="性别" prop="sex">
+          <el-input v-model="addForm.sex"></el-input>
+        </el-form-item>
+        <el-form-item label="住址" prop="address">
+          <el-input v-model="addForm.address"></el-input>
+        </el-form-item>
       </el-form>
       <!--底部区域-->
       <span slot="footer" class="dialog-footer">
@@ -98,7 +103,10 @@
         <el-form-item label="手机号" prop="phone">
           <el-input v-model="editForm.phone" ></el-input>
         </el-form-item>
-        <el-form-item label="详细地址" prop="address">
+        <el-form-item label="性别" prop="phone">
+          <el-input v-model="editForm.sex" ></el-input>
+        </el-form-item>
+        <el-form-item label="住址" prop="address">
           <el-input v-model="editForm.address" ></el-input>
         </el-form-item>
       </el-form>
@@ -135,6 +143,13 @@
         cb(new Error('请输入正确手机号'))
       }
       return {
+        roleNameColors: function (data) {
+          if(data == '1'){
+            return 'blue';
+          } else {
+            return 'red';
+          }
+        },
         queryInfo: {
           query: '',
           //当前所在页
@@ -150,7 +165,9 @@
         addForm: {
           userName: '',
           password: '',
-          phone: ''
+          phone: '',
+          sex: '',
+          address: ''
         },
         //添加表单验证规则对象
         addFormRules: {
